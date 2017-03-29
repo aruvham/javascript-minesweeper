@@ -1,18 +1,29 @@
-var gameboard = [];
+var size = 10;
+var tileSize = 500/size;
+var board = [];
 
-function setBoard(size) {
+// creates html to represent the board and fill the board with new Tile()
+function initBoard() {
+	var htmlStr = "<div class='tileContainer'>";
 	for (var i = 0; i < size; i++) {
-		gameboard[i] = [];
+		htmlStr += "<div class='row'>"
+		board.push([]);
 		for (var j = 0; j < size; j++) {
-			gameboard[i][j] = new Tile(i, j);
-			//insert that tile to the html board as a div
+			htmlStr += "<div class='tile " + j + " " + i + "'></div>"
+			board[i].push(new Tile(j, i));
 		}
+		htmlStr += "</div>"
 	}
+	htmlStr += "</div>"
+	$(".container").append(htmlStr);
 }
 
 function Tile(x, y) {
 	this.x = x;
-	this.y = j;
-	this.html = $
+	this.y = y;
+	//this.html = $(".tile ." + x + " ." + y);
 }
 
+$(document).ready(function(){
+	initBoard();
+});
