@@ -1,29 +1,37 @@
 
 $(document).ready(function(){
-	game.initialize(.1);
+	game.initialize(.05);
+
+	$('.button').on('click', game.reset);
 });
 
 const game = {
 	board: [],
 	size: 10,
-	mineChance: 0.1,
+	mineChance: 0.15,
+	activatedTiles: 0,
+	flaggedTiles: 0,
+	totalMines: null,
 
 	initialize: function(mineChance) {
 		game.mineChance = mineChance;
 		createBoard();
 		getAllNeighbors();
-		$('.tile').on('click', (event) => {
-			let coordinates = $(event.target).attr('coordinates')
-				.split(' ')
-				.map( (el) => +el );
-			getTile(...coordinates).activate();
-		});
+		game.totalMines = countMines();
+		setEventHandlers();
+
 	},
 
 	reset: function() {
 		$('.tileContainer').remove();
 		game.board = [];
-		game.initialize(.1);
+		game.activatedTiles = 0;
+		game.totalMines = null;
+		game.initialize(0.15);
+	},
+
+	win: function() {
+		alert('Victory!');
 	}
 }
 
@@ -42,6 +50,23 @@ function createBoard() {
 	$(".container").append(htmlStr);
 }
 
+function setEventHandlers() {
+	$('.tile').on('click', function (event) {
+		getTileByEvent(event).activate();
+	});
+	$('.tile').bind('contextmenu', function(e){
+	return false;
+	});
+	$('.tile').on('contextmenu', function(event) {
+		let tile = getTileByEvent(event);
+		if (tile.activated && (tile.sumNeighbors('flagged') === tile.sumNeighbors('hasMine'))) {
+			tile.activateNeighbors();
+		} else {
+			tile.flag();
+		}
+	});
+}
+
 function Tile(r, c) {
 	this.r = r;
 	this.c = c;
@@ -49,27 +74,36 @@ function Tile(r, c) {
 	this.$node = $('[coordinates="' + r + ' ' + c + '"]'); //and this is not working?
 	this.hasMine = game.mineChance > Math.random();
 	this.neighbors = null;
-	this.adjacentMines = null;
+	this.flagged = false;
 }
 
 Tile.prototype.activate = function () {
-	if (!this.activated) {
+	if (!this.activated && !this.flagged) {
 		// console.log('activated');
 		this.activated = true;
-		let mineCount = this.adjacentMines;
+		game.activatedTiles++;
+		let mineCount = this.sumNeighbors('hasMine');
 		if(this.hasMine) {
-			alert('kaboom \n\n\n try again');
-			game.reset();
+			alert('kaboom \n\n try again');
 		} else {
 			$(this.coordinates).addClass(mineCount + "mine activated");
 			if (mineCount === 0) {
-				this.neighbors.forEach(function(neighborTile) {
-					neighborTile.activate();
-				});
-			} else {
-				$(this.coordinates).append('<div class="' + mineCount + '">' + mineCount + '</div>');
+				this.activateNeighbors();
+				} else {
+				$(this.coordinates).text(mineCount);
 			}
 		}
+		if (game.activatedTiles + game.totalMines === (game.size * game.size)) {
+			game.win();
+		}
+	}
+}
+
+Tile.prototype.flag = function () {
+	if (!this.activated){
+		this.flagged ? game.flaggedTiles-- : game.flaggedTiles++;
+		this.flagged = !this.flagged;
+		$(this.coordinates).toggleClass('flagged');
 	}
 }
 
@@ -86,8 +120,34 @@ Tile.prototype.getNeighbors = function() {
 	this.neighbors = neighbors;
 }
 
-Tile.prototype.sumNeighbors = function() {
-	this.adjacentMines = this.neighbors.reduce( (sum, neighborTile) => {return sum + neighborTile.hasMine}, 0);
+Tile.prototype.sumNeighbors = function(prop) {
+	return this.neighbors.reduce( (sum, neighborTile) => {return sum + neighborTile[prop]}, 0);
+}
+
+Tile.prototype.activateNeighbors = function() {
+	this.neighbors.forEach(function(neighborTile) {
+		neighborTile.activate();
+	})
+}
+
+function getAllNeighbors() {
+	for (var r = 0; r < game.size; r++) {
+		for (var c = 0; c < game.size; c++) {
+			let tile = getTile(r, c);
+			tile.getNeighbors();
+		}
+	}
+}
+
+function countMines() {
+	let sum = 0;
+	for (var r = 0; r < game.size; r++) {
+		for (var c = 0; c < game.size; c++) {
+			if(getTile(r, c).hasMine)
+			sum++;
+		}
+	}
+	return sum;
 }
 
 function onBoard (r, c) {
@@ -98,12 +158,9 @@ function getTile(r, c) {
 	return game.board[r][c];
 }
 
-
-function getAllNeighbors() {
-	for (var r = 0; r < game.size; r++) {
-		for (var c = 0; c < game.size; c++) {
-			getTile(r, c).getNeighbors();
-			getTile(r, c).sumNeighbors();
-		}
-	}
+function getTileByEvent(event) {
+	let coordinates = $(event.target).attr('coordinates')
+		.split(' ')
+		.map( (el) => +el );
+	return getTile(...coordinates)
 }
