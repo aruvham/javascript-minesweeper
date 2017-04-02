@@ -68,7 +68,7 @@ body {
 	box-sizing: border-box;
 	cursor: pointer;
 }
-
+.activated,
 .tile:hover,
 .button:hover {
 	border-bottom: 5px solid white;
