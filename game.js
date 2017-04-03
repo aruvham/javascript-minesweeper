@@ -19,7 +19,7 @@ const game = {
 		clicks.enable();
 	},
 	reset: function() {
-		$('.button').removeClass('shades skull');
+		$('.button').removeClass('shades dead');
 		$('.tileContainer').remove();
 		game.board = [];
 		game.activatedTiles = 0;
@@ -33,11 +33,6 @@ const game = {
 		eachTile((tile) => {
 			if (!tile.activated && !tile.flagged) {
 				tile.flag();
-				// if(this.hasMine) {
-				// 	$(this.coordinates).addClass('flagged');
-				// } else {
-				// 	$(this.coordinates).addClass('activated');
-				// }
 			}
 		});
 		$('.button').addClass('shades');
@@ -51,7 +46,7 @@ const game = {
 				tile.activate();
 			}
 		});
-		$('.button').addClass('skull');
+		$('.button').addClass('dead');
 	}
 
 }

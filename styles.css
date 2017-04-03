@@ -74,6 +74,10 @@ body {
   user-select: none;
 }
 
+.tile:hover {
+	background-color: rgb(180, 180, 180);
+}
+
 
 .tile.activated,
 /*.tile:hover,*/
@@ -98,7 +102,7 @@ body {
 	font-weight: bolder;
 }
 
-.exploded {
+.tile.exploded {
 	background-image: url(img/mine.png);
 	background-size: 90%;
 	background-position: center;
@@ -108,9 +112,9 @@ body {
 .button.shades{
 	background-image: url(img/shades.png);
 }
-.button.skull {
-	background-image: url(img/skull.png);
-	background-size: 90%;
+.button.dead {
+	background-image: url(img/dead.png);
+	background-size: 80%;
 	background-repeat: no-repeat;
 }
 .container,
