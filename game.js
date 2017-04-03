@@ -18,20 +18,74 @@ const game = {
 		createBoard();
 		getAllNeighbors();
 		game.totalMines = countMines();
-		setEventHandlers();
+		clicks.enable();
+		$('.button').removeClass('shades');
+
 
 	},
-
 	reset: function() {
+		$('.button').removeClass('shades skull');
 		$('.tileContainer').remove();
 		game.board = [];
 		game.activatedTiles = 0;
 		game.totalMines = null;
-		game.initialize(0.15);
+		game.gameOver = false;
+		game.initialize(0.05);
 	},
-
 	win: function() {
-		alert('Victory!');
+		console.log('Victory!');
+		clicks.disable()
+		eachTile((tile) => {
+			if (!tile.activated && !tile.flagged) {
+				if(this.hasMine) {
+					$(this.coordinates).addClass('flagged');
+				} else {
+					$(this.coordinates).addClass('activated');
+				}
+			}
+		});
+		$('.button').addClass('shades');
+	},
+	lose: function() {
+		game.gameOver = true;
+		console.log('KABOOM')
+		clicks.disable()
+		eachTile((tile) => {
+			if (!tile.activated && !tile.flagged) {
+				tile.activate();
+			}
+		});
+		$('.button').addClass('skull');
+	}
+
+}
+
+const clicks = {
+	enable: function() {
+		$('.tile').on('click', function (event) {
+			let tile = getTileByEvent(event);
+			if (tile.activated && (tile.sumNeighbors('flagged') === tile.sumNeighbors('hasMine'))) {
+				tile.activateNeighbors();
+			} else {
+				tile.activate();
+			}
+		});
+		$('.tile').on('contextmenu', function(e){
+		return false;
+		});
+		$('.tile').on('contextmenu', function(event) {
+			let tile = getTileByEvent(event);
+			if (tile.activated && (tile.sumNeighbors('flagged') === tile.sumNeighbors('hasMine'))) {
+				tile.activateNeighbors();
+			} else {
+				tile.flag();
+			}
+		});
+	},
+	disable: function() {
+		$('.tile').off('click');
+		$('.tile').off('contextmenu');
+		$('.tile').on('contextmenu', () => {return false});
 	}
 }
 
@@ -50,84 +104,70 @@ function createBoard() {
 	$(".container").append(htmlStr);
 }
 
-function setEventHandlers() {
-	$('.tile').on('click', function (event) {
-		getTileByEvent(event).activate();
-	});
-	$('.tile').bind('contextmenu', function(e){
-	return false;
-	});
-	$('.tile').on('contextmenu', function(event) {
-		let tile = getTileByEvent(event);
-		if (tile.activated && (tile.sumNeighbors('flagged') === tile.sumNeighbors('hasMine'))) {
-			tile.activateNeighbors();
-		} else {
-			tile.flag();
-		}
-	});
-}
+class Tile {
+	constructor(r, c) {
+		this.r = r;
+		this.c = c;
+		this.coordinates = '[coordinates="' + r + ' ' + c + '"]'; //why is this working?
+		// this.$node = $('[coordinates="' + r + ' ' + c + '"]'); //and this is not working?
+		this.hasMine = game.mineChance > Math.random();
+		this.neighbors = null;
+		this.flagged = false;
+	}
 
-function Tile(r, c) {
-	this.r = r;
-	this.c = c;
-	this.coordinates = '[coordinates="' + r + ' ' + c + '"]'; //why is this working?
-	this.$node = $('[coordinates="' + r + ' ' + c + '"]'); //and this is not working?
-	this.hasMine = game.mineChance > Math.random();
-	this.neighbors = null;
-	this.flagged = false;
-}
-
-Tile.prototype.activate = function () {
-	if (!this.activated && !this.flagged) {
-		// console.log('activated');
-		this.activated = true;
-		game.activatedTiles++;
-		let mineCount = this.sumNeighbors('hasMine');
-		if(this.hasMine) {
-			alert('kaboom \n\n try again');
-		} else {
-			$(this.coordinates).addClass(mineCount + "mine activated");
-			if (mineCount === 0) {
-				this.activateNeighbors();
-				} else {
-				$(this.coordinates).text(mineCount);
+	activate() {
+		if (!this.activated && !this.flagged) {
+			// console.log('activated');
+			this.activated = true;
+			game.activatedTiles++;
+			let mineCount = this.sumNeighbors('hasMine');
+			if(this.hasMine) {
+				$(this.coordinates).addClass('exploded activated');
+				game.lose();
+			} else {
+				$(this.coordinates).addClass('mines' + mineCount + ' activated');
+				if (mineCount === 0) {
+					this.activateNeighbors();
+					} else {
+					$(this.coordinates).text(mineCount);
+				}
+				if (!game.gameOver && ( game.activatedTiles + game.totalMines === (game.size * game.size)) ) {
+					game.win();
+				}
 			}
 		}
-		if (game.activatedTiles + game.totalMines === (game.size * game.size)) {
-			game.win();
+	}
+
+	flag() {
+		if (!this.activated){
+			this.flagged ? game.flaggedTiles-- : game.flaggedTiles++;
+			this.flagged = !this.flagged;
+			$(this.coordinates).toggleClass('flagged');
 		}
 	}
-}
-
-Tile.prototype.flag = function () {
-	if (!this.activated){
-		this.flagged ? game.flaggedTiles-- : game.flaggedTiles++;
-		this.flagged = !this.flagged;
-		$(this.coordinates).toggleClass('flagged');
-	}
-}
 
 
-Tile.prototype.getNeighbors = function() {
-	let neighbors = [];
-	for (var r = this.r - 1; r <= this.r + 1; r++) {
-		for (var c = this.c - 1; c <= this.c + 1; c++) {
-			if(onBoard(r, c)) {
-				neighbors.push(game.board[r][c]);
-			};
+	getNeighbors(){
+		let neighbors = [];
+		for (var r = this.r - 1; r <= this.r + 1; r++) {
+			for (var c = this.c - 1; c <= this.c + 1; c++) {
+				if(onBoard(r, c)) {
+					neighbors.push(game.board[r][c]);
+				};
+			}
 		}
+		this.neighbors = neighbors;
 	}
-	this.neighbors = neighbors;
-}
 
-Tile.prototype.sumNeighbors = function(prop) {
-	return this.neighbors.reduce( (sum, neighborTile) => {return sum + neighborTile[prop]}, 0);
-}
+	sumNeighbors(prop) {
+		return this.neighbors.reduce( (sum, neighborTile) => {return sum + neighborTile[prop]}, 0);
+	}
 
-Tile.prototype.activateNeighbors = function() {
-	this.neighbors.forEach(function(neighborTile) {
-		neighborTile.activate();
-	})
+	activateNeighbors() {
+		this.neighbors.forEach(function(neighborTile) {
+			neighborTile.activate();
+		})
+	}
 }
 
 function getAllNeighbors() {
@@ -140,13 +180,10 @@ function getAllNeighbors() {
 }
 
 function countMines() {
-	let sum = 0;
-	for (var r = 0; r < game.size; r++) {
-		for (var c = 0; c < game.size; c++) {
-			if(getTile(r, c).hasMine)
-			sum++;
-		}
-	}
+	var sum = 0;
+	eachTile(function(tile) {
+		sum += tile.hasMine;
+	})
 	return sum;
 }
 
@@ -161,6 +198,14 @@ function getTile(r, c) {
 function getTileByEvent(event) {
 	let coordinates = $(event.target).attr('coordinates')
 		.split(' ')
-		.map( (el) => +el );
+		.map( el => +el );
 	return getTile(...coordinates)
+}
+
+function eachTile(callback) {
+	for (var r = 0; r < game.size; r++) {
+		for (var c = 0; c < game.size; c++) {
+			callback(getTile(r, c));
+		}
+	}
 }

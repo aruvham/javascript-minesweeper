@@ -47,11 +47,12 @@ body {
 }
 
 .button {
-	height: 28px;
-	width: 28px;
+	height: 36px;
+	width: 36px;
 	background-image: url(img/smiley.png);
 	background-position: center;
-	background-size: 125% 125% !important;
+	background-repeat: no-repeat;
+	background-size: 125%;
 	cursor: pointer;
 }
 
@@ -67,14 +68,12 @@ body {
 	display: inline-block;
 	box-sizing: border-box;
 	cursor: pointer;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-.flagged {
-	background-image: url(img/flag.png);
-	background-position: center;
-	background-size: 75%;
-	background-repeat: no-repeat;
-}
 
 .tile.activated,
 /*.tile:hover,*/
@@ -85,6 +84,35 @@ body {
 	border-left: 5px solid rgb(119,119,119);
 }
 
+.flagged {
+	background-image: url(img/flag.png);
+	background-position: center;
+	background-size: 75%;
+	background-repeat: no-repeat;
+}
+
+.activated{
+	text-align: center;
+	padding-top: 5px;
+	font-size: 35px;
+	font-weight: bolder;
+}
+
+.exploded {
+	background-image: url(img/mine.png);
+	background-size: 90%;
+	background-position: center;
+	background-color: red;
+}
+
+.shades{
+	background-image: url(img/shades.png);
+}
+.button.skull {
+	background-image: url(img/skull.png);
+	background-size: 90%;
+	background-repeat: no-repeat;
+}
 .container,
 .menu,
 .tile,
@@ -96,6 +124,12 @@ body {
 	vertical-align: top;
 }
 
-.activated{
-	text-align: center;
+.mines1 {
+	color: blue;
+}
+.mines2 {
+	color: #007c00;
+}
+.mines3 {
+	color: red;
 }
