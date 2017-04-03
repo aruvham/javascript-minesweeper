@@ -1,20 +1,18 @@
 
 $(document).ready(function(){
-	game.initialize(.05);
-
+	game.initialize();
 	$('.button').on('click', game.reset);
 });
 
 const game = {
 	board: [],
 	size: 10,
-	mineChance: 0.15,
+	mineChance: 0.2,
 	activatedTiles: 0,
 	flaggedTiles: 0,
 	totalMines: null,
 
-	initialize: function(mineChance) {
-		game.mineChance = mineChance;
+	initialize: function() {
 		createBoard();
 		getAllNeighbors();
 		game.totalMines = countMines();
@@ -37,11 +35,12 @@ const game = {
 		clicks.disable()
 		eachTile((tile) => {
 			if (!tile.activated && !tile.flagged) {
-				if(this.hasMine) {
-					$(this.coordinates).addClass('flagged');
-				} else {
-					$(this.coordinates).addClass('activated');
-				}
+				tile.flag();
+				// if(this.hasMine) {
+				// 	$(this.coordinates).addClass('flagged');
+				// } else {
+				// 	$(this.coordinates).addClass('activated');
+				// }
 			}
 		});
 		$('.button').addClass('shades');
@@ -51,7 +50,7 @@ const game = {
 		console.log('KABOOM')
 		clicks.disable()
 		eachTile((tile) => {
-			if (!tile.activated && !tile.flagged) {
+			if (tile.hasMine && !tile.flagged) {
 				tile.activate();
 			}
 		});

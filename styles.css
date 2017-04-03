@@ -87,7 +87,7 @@ body {
 .flagged {
 	background-image: url(img/flag.png);
 	background-position: center;
-	background-size: 75%;
+	background-size: 85%;
 	background-repeat: no-repeat;
 }
 
@@ -132,4 +132,19 @@ body {
 }
 .mines3 {
 	color: red;
+}
+.mines4 {
+	color: #0a0a80;
+}
+.mines5 {
+  color: #7c0000;
+}
+.mines6 {
+	color: #008284;
+}
+.mines7 {
+  color: #840084
+}
+.mines8 {
+
 }
