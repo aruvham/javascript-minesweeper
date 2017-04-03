@@ -7,7 +7,7 @@ $(document).ready(function(){
 const game = {
 	board: [],
 	size: 10,
-	mineChance: 0.2,
+	mineChance: 0.15,
 	activatedTiles: 0,
 	flaggedTiles: 0,
 	totalMines: null,
@@ -17,9 +17,6 @@ const game = {
 		getAllNeighbors();
 		game.totalMines = countMines();
 		clicks.enable();
-		$('.button').removeClass('shades');
-
-
 	},
 	reset: function() {
 		$('.button').removeClass('shades skull');
