@@ -48,7 +48,7 @@ h1 {
 	color: #cc0000;
 	text-shadow: 1px 1px red;
 	background-color: #333333;
-	font-size: 26px;
+	font-size: 25px;
 	height: 30px;
 	padding: 0;
 	border-top: 5px solid #1a1a1a;
@@ -60,8 +60,9 @@ h1 {
 
 .display td {
 	height: 30px;
-	width: 100px;
-	text-align: center;
+	width: 150px;
+	padding-left: 10px;
+	text-align: left;
   vertical-align: middle;
 	text-shadow: rgb(255,0,0,0.5) 0 0 10px;
 }

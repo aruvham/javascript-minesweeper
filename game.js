@@ -96,15 +96,15 @@ const game = {
 
 	// displays methods
 	showScore: function(score) {
-		$('.display-score').html('<tr><td>' + score + '</td></tr>');
+		$('.display-score').html('<tr><td>SCORE: ' + score + '</td></tr>');
 	},
 
 	showCounter: function(mines) {
-		$('.display-counter').html('<tr><td>' + mines + '</td></tr>');
+		$('.display-counter').html('<tr><td>MINES: ' + mines + '</td></tr>');
 	},
 
 	showTime: function(time) {
-		$('.display-timer').html('<tr><td>' + time + '</td></tr>');
+		$('.display-timer').html('<tr><td>TIME: ' + time + '</td></tr>');
 	}
 }
 
