@@ -47,11 +47,12 @@ body {
 }
 
 .button {
-	height: 28px;
-	width: 28px;
+	height: 36px;
+	width: 36px;
 	background-image: url(img/smiley.png);
 	background-position: center;
-	background-size: 125% 125% !important;
+	background-repeat: no-repeat;
+	background-size: 125%;
 	cursor: pointer;
 }
 
@@ -67,9 +68,19 @@ body {
 	display: inline-block;
 	box-sizing: border-box;
 	cursor: pointer;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-.tile:hover,
+.tile:hover {
+	background-color: rgb(180, 180, 180);
+}
+
+
+.tile.activated,
+/*.tile:hover,*/
 .button:hover {
 	border-bottom: 5px solid white;
 	border-right: 5px solid white;
@@ -77,6 +88,35 @@ body {
 	border-left: 5px solid rgb(119,119,119);
 }
 
+.flagged {
+	background-image: url(img/flag.png);
+	background-position: center;
+	background-size: 85%;
+	background-repeat: no-repeat;
+}
+
+.activated{
+	text-align: center;
+	padding-top: 5px;
+	font-size: 35px;
+	font-weight: bolder;
+}
+
+.tile.exploded {
+	background-image: url(img/mine.png);
+	background-size: 90%;
+	background-position: center;
+	background-color: red;
+}
+
+.button.shades{
+	background-image: url(img/shades.png);
+}
+.button.dead {
+	background-image: url(img/dead.png);
+	background-size: 80%;
+	background-repeat: no-repeat;
+}
 .container,
 .menu,
 .tile,
@@ -85,4 +125,30 @@ body {
 	border-left: 5px solid white;
 	border-bottom: 5px solid rgb(119,119,119);
 	border-right: 5px solid rgb(119,119,119);
+	vertical-align: top;
+}
+
+.mines1 {
+	color: blue;
+}
+.mines2 {
+	color: #007c00;
+}
+.mines3 {
+	color: red;
+}
+.mines4 {
+	color: #0a0a80;
+}
+.mines5 {
+  color: #7c0000;
+}
+.mines6 {
+	color: #008284;
+}
+.mines7 {
+  color: #840084
+}
+.mines8 {
+
 }
