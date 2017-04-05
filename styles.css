@@ -1,18 +1,30 @@
+@font-face {
+  font-family: 'pacfont';
+  src: url(assets/pacfont.ttf) format('truetype');
+}
+
 body {
 	background-color: white;
 	box-sizing: border-box;
 	font-family: 'Orbitron', sans-serif;
-	background-color: lightBlue;
+	background-color: #336699;
+}
+
+h1 {
+	font-family: 'pacfont';
+	color: #1a1a1a;
+	margin: 30px auto;
+	text-align: center;
+	font-size: 45px;
 }
 
 .container {
-	background-color: rgb(192, 192, 192);
+	background-color: #b3b3b3;
 	display: block;
 	margin: auto;
 	width: 530px;
 	padding-bottom: 15px;
 	padding-left: 30px;
-	margin-top: 50px;
 }
 
 .menu {
@@ -33,15 +45,23 @@ body {
 
 .display {
 	display: inline-block;
-	color: red;
-	background-color: black;
+	color: #cc0000;
+	text-shadow: 1px 1px red;
+	background-color: #333333;
 	font-size: 26px;
 	height: 30px;
 	padding: 0;
+	border-top: 5px solid #1a1a1a;
+	border-left: 5px solid #1a1a1a;
+	border-right: 5px solid #4d4d4d;
+	border-bottom: 5px solid #4d4d4d;
+
 }
 
 .display td {
 	height: 30px;
+	width: 100px;
+	text-align: center;
   vertical-align: middle;
 	text-shadow: rgb(255,0,0,0.5) 0 0 10px;
 }
@@ -49,11 +69,29 @@ body {
 .button {
 	height: 36px;
 	width: 36px;
-	background-image: url(img/smiley.png);
+	cursor: pointer;
+}
+
+.button-center {
+	background-image: url(assets/img/smiley.png);
+	background-size: 100%;
+}
+
+.button-options {
+	background-image: url(https://cdn3.iconfinder.com/data/icons/internet-and-web-4/78/internt_web_technology-02-512.png);
+	background-size: 90%;
+}
+
+.button-leaderboard {
+	background-image: url(https://maxcdn.icons8.com/Android_L/PNG/512/Sports/leaderboard-512.png);
+	background-size: 110%;
+}
+
+.button-center,
+.button-options,
+.button-leaderboard {
 	background-position: center;
 	background-repeat: no-repeat;
-	background-size: 125%;
-	cursor: pointer;
 }
 
 .row {
@@ -61,7 +99,7 @@ body {
 }
 
 .tile {
-	background-color: rgb(192, 192, 192);
+	background-color: #b3b3b3;
 	margin: 0;
 	height: 100%;
 	width: 50px;
@@ -80,16 +118,15 @@ body {
 
 
 .tile.activated,
-/*.tile:hover,*/
 .button:hover {
-	border-bottom: 5px solid white;
-	border-right: 5px solid white;
+	border-bottom: 5px solid #e6e6e6;
+	border-right: 5px solid #e6e6e6;
 	border-top: 5px solid rgb(119,119,119);
 	border-left: 5px solid rgb(119,119,119);
 }
 
 .flagged {
-	background-image: url(img/flag.png);
+	background-image: url(assets/img/flag.png);
 	background-position: center;
 	background-size: 85%;
 	background-repeat: no-repeat;
@@ -103,17 +140,17 @@ body {
 }
 
 .tile.exploded {
-	background-image: url(img/mine.png);
+	background-image: url(assets/img/mine.png);
 	background-size: 90%;
 	background-position: center;
-	background-color: red;
+	background-color: #cc0000;
 }
 
 .button.shades{
-	background-image: url(img/shades.png);
+	background-image: url(assets/img/shades.png);
 }
 .button.dead {
-	background-image: url(img/dead.png);
+	background-image: url(assets/img/dead.png);
 	background-size: 80%;
 	background-repeat: no-repeat;
 }
@@ -121,8 +158,8 @@ body {
 .menu,
 .tile,
 .button {
-	border-top: 5px solid white;
-	border-left: 5px solid white;
+	border-top: 5px solid #e6e6e6;
+	border-left: 5px solid #e6e6e6;
 	border-bottom: 5px solid rgb(119,119,119);
 	border-right: 5px solid rgb(119,119,119);
 	vertical-align: top;
@@ -135,7 +172,7 @@ body {
 	color: #007c00;
 }
 .mines3 {
-	color: red;
+	color: #cc0000;
 }
 .mines4 {
 	color: #0a0a80;
@@ -148,7 +185,4 @@ body {
 }
 .mines7 {
   color: #840084
-}
-.mines8 {
-
 }

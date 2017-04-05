@@ -11,17 +11,24 @@ const game = {
 	activatedTiles: 0,
 	flaggedTiles: 0,
 	totalMines: null,
+
+	// display info
 	time: 0,
-	highScore: localStorage.getItem('highScore') || 1000000,
+	isTimerOn: false,
+	highScore: localStorage.getItem('highScore') || 0,
 
 	initialize: function() {
 		createBoard();
 		getAllNeighbors();
 		game.totalMines = countMines();
 		clicks.enable();
-		game.updateTimer()
-		$('.counterDisplay').text(game.highScore);
+
+		// displays
+		game.showScore(this.highScore);
+		game.showCounter(this.totalMines);
+		game.showTime(this.time);
 	},
+
 	reset: function() {
 		$('.button').removeClass('shades dead');
 		$('.tileContainer').remove();
@@ -29,54 +36,85 @@ const game = {
 		game.activatedTiles = 0;
 		game.totalMines = null;
 		game.gameOver = false;
-		game.initialize();
-		$('.timerDisplay').text('0');
 		game.time = 0;
+		game.highScore = localStorage.getItem('highScore') || 0;
+
+		game.initialize();
 	},
+
 	win: function() {
-		game.stopTimer();
 		console.log('Victory!');
+
+		game.stopTimer();
 		clicks.disable()
+
 		eachTile((tile) => {
 			if (!tile.activated && !tile.flagged) {
 				tile.flag();
 			}
 		});
+
 		$('.button').addClass('shades');
 		game.checkScore();
 	},
+
 	lose: function() {
 		game.gameOver = true;
 		game.stopTimer();
-		console.log('KABOOM')
-		clicks.disable()
+		clicks.disable();
+
 		eachTile((tile) => {
 			if (tile.hasMine && !tile.flagged) {
 				tile.activate();
 			}
 		});
+
 		$('.button').addClass('dead');
 	},
-	updateTimer: function() {
-		game.time++;
-		$('.timerDisplay').text(game.time);
-		window.timerID = setTimeout(game.updateTimer, 1000);
-	},
-	stopTimer: function() {
-		clearTimeout(timerID);
-	},
+
 	checkScore: function() {
 		if (game.time < game.highScore) {
 			localStorage.setItem('highScore', game.time);
-			game.highScore = game.time;
 		}
-	}
+	},
 
+	// timer methods
+	startTimer: function() {
+		window.timerID = setInterval(game.updateTimer, 1000);
+		game.isTimerOn = true;
+	},
+
+	updateTimer: function() {
+		game.time++;
+		game.showTime(game.time);
+	},
+
+	stopTimer: function() {
+		clearInterval(timerID);
+		game.isTimerOn = false;
+	},
+
+	// displays methods
+	showScore: function(score) {
+		$('.display-score').html('<tr><td>' + score + '</td></tr>');
+	},
+
+	showCounter: function(mines) {
+		$('.display-counter').html('<tr><td>' + mines + '</td></tr>');
+	},
+
+	showTime: function(time) {
+		$('.display-timer').html('<tr><td>' + time + '</td></tr>');
+	}
 }
 
 const clicks = {
 	enable: function() {
 		$('.tile').on('click', function (event) {
+
+			// start timer
+			if(!game.isTimerOn) game.startTimer();
+
 			let tile = getTileByEvent(event);
 			if (tile.activated && (tile.sumNeighbors('flagged') === tile.sumNeighbors('hasMine'))) {
 				tile.activateNeighbors();
@@ -86,10 +124,11 @@ const clicks = {
 		});
 		$('.tile').on('contextmenu', function(e){
 		return false;
-		});
+	}); // WTF??
 		$('.tile').on('contextmenu', function(event) {
 			let tile = getTileByEvent(event);
 			if (tile.activated && (tile.sumNeighbors('flagged') === tile.sumNeighbors('hasMine'))) {
+				// why do we call this again? already been called in click event
 				tile.activateNeighbors();
 			} else {
 				tile.flag();
@@ -137,6 +176,7 @@ class Tile {
 			let mineCount = this.sumNeighbors('hasMine');
 			if(this.hasMine) {
 				$(this.coordinates).addClass('exploded activated');
+
 				game.lose();
 			} else {
 				$(this.coordinates).addClass('mines' + mineCount + ' activated');
@@ -153,10 +193,13 @@ class Tile {
 	}
 
 	flag() {
-		if (!this.activated){
+		if (!this.activated && (game.totalMines - game.flaggedTiles) > 0){
 			this.flagged ? game.flaggedTiles-- : game.flaggedTiles++;
 			this.flagged = !this.flagged;
 			$(this.coordinates).toggleClass('flagged');
+
+			// update and show counter
+			game.showCounter(game.totalMines - game.flaggedTiles);
 		}
 	}
 
