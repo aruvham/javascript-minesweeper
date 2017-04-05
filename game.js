@@ -11,12 +11,16 @@ const game = {
 	activatedTiles: 0,
 	flaggedTiles: 0,
 	totalMines: null,
+	time: 0,
+	highScore: localStorage.getItem('highScore') || 1000000,
 
 	initialize: function() {
 		createBoard();
 		getAllNeighbors();
 		game.totalMines = countMines();
 		clicks.enable();
+		game.updateTimer()
+		$('.counterDisplay').text(game.highScore);
 	},
 	reset: function() {
 		$('.button').removeClass('shades dead');
@@ -25,9 +29,12 @@ const game = {
 		game.activatedTiles = 0;
 		game.totalMines = null;
 		game.gameOver = false;
-		game.initialize(0.05);
+		game.initialize();
+		$('.timerDisplay').text('0');
+		game.time = 0;
 	},
 	win: function() {
+		game.stopTimer();
 		console.log('Victory!');
 		clicks.disable()
 		eachTile((tile) => {
@@ -36,9 +43,11 @@ const game = {
 			}
 		});
 		$('.button').addClass('shades');
+		game.checkScore();
 	},
 	lose: function() {
 		game.gameOver = true;
+		game.stopTimer();
 		console.log('KABOOM')
 		clicks.disable()
 		eachTile((tile) => {
@@ -47,6 +56,20 @@ const game = {
 			}
 		});
 		$('.button').addClass('dead');
+	},
+	updateTimer: function() {
+		game.time++;
+		$('.timerDisplay').text(game.time);
+		window.timerID = setTimeout(game.updateTimer, 1000);
+	},
+	stopTimer: function() {
+		clearTimeout(timerID);
+	},
+	checkScore: function() {
+		if (game.time < game.highScore) {
+			localStorage.setItem('highScore', game.time);
+			game.highScore = game.time;
+		}
 	}
 
 }
@@ -164,8 +187,7 @@ class Tile {
 function getAllNeighbors() {
 	for (var r = 0; r < game.size; r++) {
 		for (var c = 0; c < game.size; c++) {
-			let tile = getTile(r, c);
-			tile.getNeighbors();
+			getTile(r, c).getNeighbors();
 		}
 	}
 }
