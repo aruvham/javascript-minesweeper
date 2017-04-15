@@ -38,7 +38,7 @@ const game = {
 		game.gameOver = false;
 		game.time = 0;
 		game.highScore = localStorage.getItem('highScore') || 0;
-
+		game.startTimer();
 		game.initialize();
 	},
 
