@@ -1,0 +1,13 @@
+{
+  "name": "javascript-minesweeper",
+  "version": "1.0.0",
+  "homepage": "https://github.com/aruvham/javascript-minesweeper",
+  "authors": [
+    "David Hamberlin",
+    "Arturo Ruvalcaba"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.0",
+    "underscore": "~1.6.0"
+  }
+}

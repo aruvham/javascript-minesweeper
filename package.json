@@ -1,0 +1,14 @@
+{
+  "name": "javascript-minesweeper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aruvham/javascript-minesweeper.git"
+  },
+  "author": "David Hamberlin & Arturo Ruvalcaba",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
