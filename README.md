@@ -1,4 +1,4 @@
-# Linked List
+# javascript-minesweeper
 
 **javascript-minesweeper** is a clone of the original game, built with HTML, CSS and JavasCript. It uses jQuery for DOM manipulation.
 
