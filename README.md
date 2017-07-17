@@ -17,7 +17,6 @@ Developers
 <!---
 Link References
 -->
-
-[Try the app now]:https://linkedlistjobs.herokuapp.com
+[Play the game now]:https://minesweeper-aruvham.herokuapp.com/
 [Arturo Ruvalcaba]:https://github.com/aruvham
 [David Hamberlin]:https://github.com/dhamberlin
